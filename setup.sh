@@ -12,9 +12,9 @@ chmod +x start.sh
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/monitor.desktop
 chmod +x monitor.desktop
 sudo mv monitor.desktop /home/linaro/Desktop/
-wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/otevirani.desktop
-chmod +x otevirani.desktop
-sudo mv otevirani.desktop /home/linaro/Desktop/
+wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/ovladani.desktop
+chmod +x ovladani.desktop
+sudo mv ovladani.desktop /home/linaro/Desktop/
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
