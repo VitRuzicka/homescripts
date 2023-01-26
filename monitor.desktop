@@ -1,8 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Name=Monitor
-Exec=/home/linaro/debug.py
+Exec=python3 /home/linaro/debug.py
 Path=/home/linaro/
-Terminal=false
+Terminal=true
 Type=Application
 Categories=Utility;Application;
+X-KeepTerminal=true
