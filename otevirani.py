@@ -5,7 +5,7 @@ except FileNotFoundError:
   quit()
 while True:
   if input() == 'pomoc':
-    ser.write('o')
-    ser.write('z')
+    ser.write(b'o')
+    ser.write(b'z')
 ser.close()
   
