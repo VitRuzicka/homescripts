@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Ovladani
+Exec=python3 /home/linaro/otevirani.py
+Path=/home/linaro/
+Terminal=true
+Type=Application
+Categories=Utility;Application;
+X-KeepTerminal=true
