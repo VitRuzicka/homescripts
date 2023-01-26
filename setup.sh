@@ -12,3 +12,10 @@ chmod +x start.sh
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/monitor.desktop
 chmod +x monitor.desktop
 sudo mv monitor.desktop /home/linaro/Desktop/
+#write out current crontab
+crontab -l > mycron
+#echo new cron into cron file
+echo "@reboot sh /home/linaro/start.sh &" >> mycron
+#install new cron file
+crontab mycron
+rm mycron
