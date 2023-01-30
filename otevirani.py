@@ -6,7 +6,7 @@ key = "pomoc"
 while 1:
         if(input() == key):
                 try:
-                        with serial.Serial("/dev/ttyACM0", 115200, timeout=1) as:
+                        with serial.Serial("/dev/ttyACM0", 115200, timeout=1) as ser:
                                 ser.write(b'o')
                                 time.sleep(1)
                                 ser.write(b'z')
