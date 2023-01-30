@@ -16,9 +16,9 @@ wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/ovladani.desk
 chmod +x ovladani.desktop
 sudo mv ovladani.desktop /home/linaro/Desktop/
 #write out current crontab
-crontab -l > mycron
+sudo crontab -l > mycron
 #echo new cron into cron file
 echo "@reboot export DISPLAY=:0 && sleep 30s && /home/linaro/start.sh" >> mycron
 #install new cron file
-crontab mycron
+sudo crontab mycron
 rm mycron
