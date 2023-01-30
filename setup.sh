@@ -18,7 +18,7 @@ sudo mv ovladani.desktop /home/linaro/Desktop/
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
-echo "@reboot sleep 20s && sh /home/linaro/start.sh &" >> mycron
+echo "@reboot export DISPLAY=:0 && sleep 30s && /home/linaro/start.sh" >> mycron
 #install new cron file
 crontab mycron
 rm mycron
