@@ -1,2 +1,2 @@
 #!/bin/bash
-lxterminal -e 'python3 /home/linaro/otevirani.py'
+lxterminal -e python3 /home/linaro/otevirani.py
