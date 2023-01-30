@@ -1,13 +1,15 @@
+#!/usr/bin/python3
 import serial
 import time
-try:
-  ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
-except FileNotFoundError:
-  quit()
-while True:
-  if input() == 'pomoc':
-    ser.write(b'o')
-    time.sleep(1)
-    ser.write(b'z')
-ser.close()
-  
+from serial import SerialException
+key = "pomoc"
+while 1:
+        if(input() == key):
+                try:
+                        with serial.Serial("/dev/ttyACM0", 115200, timeout=1) a$
+                                ser.write(b'o')
+                                time.sleep(1)
+                                ser.write(b'z')
+                                ser.close()
+                except SerialException:
+                        print("home deska nenei pripojena")
