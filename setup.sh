@@ -25,4 +25,4 @@ echo "00 19 * * * echo k |sudo tee /dev/ttyACM0" # >> mycron
 
 #install new cron file
 #sudo crontab mycron
-rm mycron
+#rm mycron
