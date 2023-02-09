@@ -19,6 +19,9 @@ sudo mv ovladani.desktop /home/linaro/Desktop/
 sudo crontab -l > mycron
 #echo new cron into cron file
 echo "@reboot export DISPLAY=:0 && sleep 30s && /home/linaro/start.sh" >> mycron
+echo "00 7 * * * echo j |sudo tee /dev/ttyACM0" >> mycron
+echo "00 19 * * * echo k |sudo tee /dev/ttyACM0" >> mycron
+
 #install new cron file
 sudo crontab mycron
 rm mycron
