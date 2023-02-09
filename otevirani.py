@@ -12,4 +12,4 @@ while 1:
                                 ser.write(b'z')
                                 ser.close()
                 except SerialException:
-                        print("home deska nenei pripojena")
+                        print("home deska neni pripojena")
