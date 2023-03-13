@@ -21,7 +21,7 @@ echo copying
 cp firmware.uf2 /media/$uzivatel/RPI-RP2/
 #./rp2040load -D firmware.elf -v
 echo done
-
+: '
 #nyni je potreba pico restartovat aby dobre nacetlo program
 #utilitou, kterou jsme drive zkompilovali
 echo "resetting pico"
@@ -31,4 +31,5 @@ PRODUCT="000a"
 lsusb -d $VENDOR:$PRODUCT | while read _ bus _ device _; do
     sudo ./usbreset "/dev/bus/usb/${bus}/${device%:}"
 done
+'
 rm firmware*
