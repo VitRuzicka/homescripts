@@ -3,6 +3,7 @@ sudo apt update -y
 sudo apt upgrade -y
 sudo apt install nano python3 python3-pip cron -y
 pip3 install pyserial
+pip3 install minimalmodbus
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/otevirani.py
 chmod +x otevirani.py
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/debug.py
