@@ -32,7 +32,7 @@ def vytiskniHodnoty(hodn):
     print("reg|    name          |value  |")
     for i, p in enumerate(sluzby):
         if i+10 == 22:
-            print ("|%2d| %16s | %3.2f |"%(i+10,p, (hodn[i]-10000.0/100.0)))
+            print ("|%2d| %16s | %3.2f |"%(i+10,p, (float(hodn[i])-10000.0)/100.0))
         else:
             print ("|%2d| %16s | %3d   |"%(i+10,p, hodn[i]))
     print("------------------------------")
