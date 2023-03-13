@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo apt update -y
 sudo apt upgrade -y
-sudo apt install nano python3 python3-pip cron -y
+sudo apt install nano python3 python3-pip cron gcc -y
 pip3 install pyserial
 pip3 install minimalmodbus
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/otevirani.py
@@ -16,6 +16,11 @@ sudo mv monitor.desktop /home/linaro/Desktop/
 wget https://raw.githubusercontent.com/VitRuzicka/homescripts/main/ovladani.desktop
 chmod +x ovladani.desktop
 sudo mv ovladani.desktop /home/linaro/Desktop/
+
+##ted neco pro spravny reset pica:
+wget https://raw.githubusercontent.com/jkulesza/usbreset/master/usbreset.c
+gcc usbreset.c -o usbreset
+
 #write out current crontab
 #sudo crontab -l > mycron
 echo "toto prosím zadejte do crontab -e"
