@@ -34,7 +34,7 @@ def vytiskniHodnoty(hodn):
         if i+10 == 22:
             print ("|%2d| %16s | %3f   |"%(i+10,p, (hodn[i]-10000.0/100.0)))
         else:
-            print ("|%2d| %16s | %3f   |"%(i+10,p, hodn[i]))
+            print ("|%2d| %16s | %3d   |"%(i+10,p, hodn[i]))
     print("------------------------------")
     
 def ziskejHodnoty():
