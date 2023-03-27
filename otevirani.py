@@ -38,5 +38,5 @@ if __name__ == '__main__':
     daemon.start()
     while True:
         r = input()
-        if r == "pomoc":
+        if r != None:
             zamek(1)
