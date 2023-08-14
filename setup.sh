@@ -25,7 +25,7 @@ gcc usbreset.c -o usbreset
 #sudo crontab -l > mycron
 echo "toto prosím zadejte do crontab -e"
 #echo new cron into cron file
-echo "@reboot export DISPLAY=:0 && sleep 30s && /home/linaro/start.sh" # >> mycron
+echo "@reboot export DISPLAY=:0 && sleep 20s && /home/linaro/start.sh" # >> mycron
 
 #install new cron file
 #sudo crontab mycron
