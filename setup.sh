@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "setting up the board"
-echo "setxkbmap -layout "cz:cz"" |sudo tee -a /home/linaro/.bashrc  #setup czech keyboard
+setxkbmap -layout "cz:cz
+echo 'setxkbmap -layout "cz:cz"' |sudo tee -a /home/linaro/.bashrc  #setup czech keyboard
 echo "deb http://archive.debian.org/debian/ stretch main contrib non-free \
 deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free \
 deb http://archive.debian.org/debian-security stretch/updates main contrib non-free" |sudo tee /etc/apt/sources.list #replace the original sources list
