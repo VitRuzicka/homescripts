@@ -5,7 +5,8 @@ import os
 import threading
 from threading import Thread
 import time
-
+SCAN_ANY=1 #opens the regular lock after any code is scanned
+LOGGING=1
 fullBrightStart = [7, 0, 0]
 fullBrightStop = [19, 0, 0]
 
@@ -16,7 +17,11 @@ def pripoj():
     global instrument
     instrument = minimalmodbus.Instrument("/dev/ttyACM0", 3) # port name, slave address (in decimal)
 def zamek(p):
-    instrument.write_register(27, p, 0)
+    if p == 0: #open the regular lock
+        instrument.write_register(27, 1, 0)
+    elif p == 1: #open the cool section
+        instrument.write_register(29, 1, 0);
+    
 def jas(p):
     instrument.write_register(14, p, 0)
 def loguj(cas):
@@ -34,9 +39,12 @@ def loguj(cas):
              
 if __name__ == '__main__':
     pripoj()
-    daemon = Thread(target=loguj, args=(5,), daemon=True, name='Logovani') #bezi kazdych 5min
-    daemon.start()
+    if LOGGING:
+        daemon = Thread(target=loguj, args=(5,), daemon=True, name='Logovani') #bezi kazdych 5min
+        daemon.start()
     while True:
         r = input()
-        if r != None:
+        if "opencool" in r: #open the cooled section
             zamek(1)
+        elif SCAN_ANY && r != None: #open the regular section
+            zamek(0)
