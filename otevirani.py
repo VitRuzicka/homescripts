@@ -46,5 +46,5 @@ if __name__ == '__main__':
         r = input()
         if "opencool" in r: #open the cooled section
             zamek(1)
-        elif SCAN_ANY && r != None: #open the regular section
+        elif SCAN_ANY and r != None: #open the regular section
             zamek(0)
