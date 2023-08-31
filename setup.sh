@@ -7,7 +7,7 @@ deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-
 deb http://archive.debian.org/debian-security stretch/updates main contrib non-free" |sudo tee /etc/apt/sources.list #replace the original sources list
 
 
-
+sudo sysctl net.ipv4.ping_group_range="0 2147483647" #repair the ping and networking
 sudo apt update -y
 sudo apt upgrade -y
 sudo apt install nano python3 python3-pip cron gcc -y
