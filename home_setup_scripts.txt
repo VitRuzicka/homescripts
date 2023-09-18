@@ -1,0 +1,4 @@
+wget --no-check-certificate https://raw.githubusercontent.com/VitRuzicka/homescripts/main/setup.sh
+
+
+@reboot export DISPLAY=:0 && sleep 20s && /home/linaro/start.sh
