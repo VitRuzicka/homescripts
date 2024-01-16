@@ -7,13 +7,14 @@ from paho.mqtt import client as mqtt_client
 from serial.tools.list_ports import comports
 import serial
 
+#TODO: kontrola ve loopu, jestli je ctecka porad pripojena
 #################  MQTT setup   #########################
 
-client_id = 'rantirovska'  #edit this line {dlouha, rantirovska}
+client_id = 'stetkova'  #edit this line {dlouha, rantirovska}
 subTopic = "/boxy/" + client_id + "/ovladani/#"
 
 
-broker = '20.61.188.187'
+broker = IP_adresa
 port = 1883
 username = None
 password = None
@@ -32,7 +33,7 @@ fullBrightStart = [7, 0, 0]
 fullBrightStop = [19, 0, 0]
 
 now = datetime.now()
-instrument = None
+ioBoard = None
 ctecka = None
 
 
@@ -48,7 +49,11 @@ def connect_mqtt() -> mqtt_client:
     client = mqtt_client.Client(client_id)
     client.username_pw_set(username, password)
     client.on_connect = on_connect
-    client.connect(broker, port)
+    try:
+        client.connect(broker, port)
+    except OSError:
+        print("Internet doesnt work, lets move on")
+        return None
     return client
 
 
@@ -69,34 +74,34 @@ def subscribe(client: mqtt_client):
 ####
     
 def pripoj():  #function loops until it connects to homeboard and reader
-    global instrument
+    global ioBoard
     global ctecka
     print("trying to connect to reader and homeIOboard")
     while(1):
         for port in comports():
-            if(port[1] == "Pico - Board CDC"):
+            if(port[1] == "Pico - Board CDC" and ioBoard == None):
                 print("homeIOboard connected")
-                instrument = minimalmodbus.Instrument(port[0], 3) # port name, slave address (in decimal)
-            if ( "NLS-FM430-U" in port[1]):
+                ioBoard = minimalmodbus.Instrument(port[0], 3) # port name, slave address (in decimal)
+            if ( "NLS" in port[1] and ctecka == None):
                 print("reader connected")
                 ctecka  = serial.Serial(port[0], 115200)
-        if instrument != None and ctecka != None: #both ports were assigned 
+        if ioBoard != None and ctecka != None: #both ports were assigned 
             break
      
 def zamek(p):
     if p == 0: #open the regular lock
-        instrument.write_register(27, 1, 0)
+        ioBoard.write_register(27, 1, 0)
     elif p == 1: #open the cool section
-        instrument.write_register(29, 1, 0)
+        ioBoard.write_register(29, 1, 0)
     
 def jas(p):
-    instrument.write_register(14, p, 0)
+    ioBoard.write_register(14, p, 0)
 
 def loguj(cas):
     while True:
         if LOGGING:
             file1 = open("log.txt", "a")
-            str1 = str(now.strftime("%d/%m/%Y, %H:%M:%S, ")+str(instrument.read_register(22,0))+" "+str(instrument.read_register(31, 0)) + " \n")
+            str1 = str(now.strftime("%d/%m/%Y, %H:%M:%S, ")+str(ioBoard.read_register(22,0))+" "+str(ioBoard.read_register(31, 0)) + " \n")
             file1.write((str1))
             file1.close()
         #automaticke ztlumeni svetel
@@ -107,30 +112,47 @@ def loguj(cas):
         time.sleep(cas*60)
 
 def checkReader():  #open the lock if the correct code had been scanned
-    bytesToRead = ctecka.inWaiting()
-    if(bytesToRead != 0):
-        ret = str(ctecka.read(bytesToRead))
-        if (regular_code in ret):
-            zamek(0)
-        elif(cool_code in ret):
-            zamek(1)
-        elif SCAN_ANY:
-            zamek(0)
+    while(1):
+        bytesToRead = ctecka.inWaiting()
+        if(bytesToRead != 0):
+            ret = str(ctecka.read(bytesToRead))
+            if (regular_code in ret):
+                print("oteviram bezny zamek")
+                zamek(0)
+            elif(cool_code in ret):
+                print("oteviram chlazenou schranku")
+                zamek(1)
+            elif SCAN_ANY:
+                print("oteviram bezny zamek")
+                zamek(0)
+        time.sleep(0.1)
 
 if __name__ == '__main__':
     if( username == None or password == None):
         print("Zadejte prvně jméno a heslo k MQTT")
         exit()
     pripoj()
+
+    #check the reader every once in a while
+    print("started the reader thread")
+    daemon2 = Thread(target=checkReader, args=(), daemon=True, name='Ctecka') #bezi porad
+    daemon2.start()
+
     if AUTO_DIM:
         daemon = Thread(target=loguj, args=(5,), daemon=True, name='Logovani') #bezi kazdych 5min
         daemon.start()
+
     if(USE_MQTT):
         client = connect_mqtt()
+        if client == None:
+            #the script could not connect to the internet
+            while client == None: #try to connect every 10s
+                client = connect_mqtt()
+                time.sleep(10)  
+            print("Now connected to internet")
         subscribe(client)
-        daemon2 = Thread(target=client.loop_forever, args=(), daemon=True, name='MQTT komunikace') #bezi porad
-        daemon2.start()
+        daemon3 = Thread(target=client.loop_forever, args=(), daemon=True, name='MQTT komunikace') #bezi porad
+        daemon3.start()
 
     while True:
-        checkReader() #opens the lock if the command comes
-        time.sleep(0.1)
+        time.sleep(1)
