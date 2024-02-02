@@ -18,15 +18,14 @@ broker = IP_adresa
 port = 1883
 username = None
 password = None
+################
 
-##################
-
-SCAN_ANY=1 #opens the regular lock after any code is scanned
-AUTO_DIM=1
+SCAN_ANY=0 #opens the regular lock after any code is scanned
+TELEMETRY=1
 LOGGING=0   #needs to have AUTO_DIM enabled
 USE_MQTT=1
 
-regular_code = "openregular"
+regular_code = "open"
 cool_code = "opencool"
 
 fullBrightStart = [7, 0, 0]
@@ -35,7 +34,6 @@ fullBrightStop = [19, 0, 0]
 now = datetime.now()
 ioBoard = None
 ctecka = None
-
 
 ###MQTT###
 
@@ -97,7 +95,17 @@ def zamek(p):
 def jas(p):
     ioBoard.write_register(14, p, 0)
 
-def loguj(cas):
+def sendTelemetry():
+    #read all the info from modbus to array
+    data = []
+    for registr in range(10,32):
+        #print(ioBoard.read_register(registr))
+        data.append( ioBoard.read_register(registr))
+    print("gathered data " + str(data))
+    #now try to send telemetry
+    client.publish(pubTopic, str(data))
+
+def telemetry(cas):
     while True:
         if LOGGING:
             file1 = open("log.txt", "a")
@@ -109,19 +117,20 @@ def loguj(cas):
             jas(255) #plny jas po cely den
         elif (int(now.strftime("%H")) == fullBrightStop[0] and int(now.strftime("%M")) >= fullBrightStop[1]) and (int(now.strftime("%H")) == fullBrightStop[0] and int(now.strftime("%M")) <= fullBrightStop[1]+5):
             jas(30)  #snizeny jas v noci
-        time.sleep(cas*60)
+        sendTelemetry()  #send the telemetry data to server
+        time.sleep(cas)
 
 def checkReader():  #open the lock if the correct code had been scanned
     while(1):
         bytesToRead = ctecka.inWaiting()
         if(bytesToRead != 0):
             ret = str(ctecka.read(bytesToRead))
-            if (regular_code in ret):
-                print("oteviram bezny zamek")
-                zamek(0)
-            elif(cool_code in ret):
-                print("oteviram chlazenou schranku")
+            if (cool_code in ret):
+                print("oteviram chlazenou sekci")
                 zamek(1)
+            elif(regular_code in ret):
+                print("oteviram normalni sekci")
+                zamek(0)
             elif SCAN_ANY:
                 print("oteviram bezny zamek")
                 zamek(0)
@@ -138,8 +147,8 @@ if __name__ == '__main__':
     daemon2 = Thread(target=checkReader, args=(), daemon=True, name='Ctecka') #bezi porad
     daemon2.start()
 
-    if AUTO_DIM:
-        daemon = Thread(target=loguj, args=(5,), daemon=True, name='Logovani') #bezi kazdych 5min
+    if TELEMETRY:
+        daemon = Thread(target=telemetry, args=(30,), daemon=True, name='Logovani') #bezi kazdych 5min
         daemon.start()
 
     if(USE_MQTT):
