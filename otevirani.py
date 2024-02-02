@@ -6,13 +6,11 @@ import time
 from paho.mqtt import client as mqtt_client
 from serial.tools.list_ports import comports
 import serial
-
-#TODO: kontrola ve loopu, jestli je ctecka porad pripojena
 #################  MQTT setup   #########################
 
-client_id = 'stetkova'  #edit this line {dlouha, rantirovska}
+client_id = 'identificator'  #edit this line {dlouha, rantirovska}
 subTopic = "/boxy/" + client_id + "/ovladani/#"
-
+pubTopic = "/boxy/" + client_id + "/stav"
 
 broker = IP_adresa
 port = 1883
@@ -103,7 +101,10 @@ def sendTelemetry():
         data.append( ioBoard.read_register(registr))
     print("gathered data " + str(data))
     #now try to send telemetry
-    client.publish(pubTopic, str(data))
+    try:
+        client.publish(pubTopic, str(data))
+    except:
+        print("Failed to send telemetry data")
 
 def telemetry(cas):
     while True:
